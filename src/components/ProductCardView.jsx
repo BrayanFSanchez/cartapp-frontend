@@ -1,4 +1,13 @@
-export const ProductCardView = ({ name, description, price }) => {
+import { useNavigate } from "react-router-dom";
+
+export const ProductCardView = ({ handler, id, name, description, price }) => {
+  const navigate = useNavigate();
+
+  const onAddProduct = (product) => {
+    handler(product);
+    navigate("/cart");
+  };
+
   return (
     <>
       <div className="card">
@@ -6,7 +15,12 @@ export const ProductCardView = ({ name, description, price }) => {
           <h5 className="card-title">{name}</h5>
           <p className="card-text">{description}</p>
           <p className="card-text">$ {price}</p>
-          <button className="btn btn-primary">Agregar</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => onAddProduct({ id, name, description, price })}
+          >
+            Agregar
+          </button>
         </div>
       </div>
     </>

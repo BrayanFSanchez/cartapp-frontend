@@ -1,4 +1,23 @@
-export const CartView = () => {
+import { useEffect, useState } from "react";
+import { calculateTotal } from "../services/productService";
+import { useNavigate } from "react-router-dom";
+
+export const CartView = ({ handlerDelete, items }) => {
+  const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTotal(calculateTotal(items));
+  }, [items]);
+
+  const onDeleteProduct = (id) => {
+    handlerDelete(id);
+  };
+
+  const onCatalog = () => {
+    navigate("/catalog");
+  };
+
   return (
     <>
       <h3>Carro de compras</h3>
@@ -14,13 +33,22 @@ export const CartView = () => {
         </thead>
 
         <tbody>
-          <tr>
-            <td>nombre</td>
-            <td>precio</td>
-            <td>cantidad</td>
-            <td>total</td>
-            <td>eliminar</td>
-          </tr>
+          {items.map((item) => (
+            <tr key={item.product.id}>
+              <td>{item.product.name}</td>
+              <td>{item.product.price}</td>
+              <td>{item.quantity}</td>
+              <td>{item.quantity * item.product.price}</td>
+              <td>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => onDeleteProduct(item.product.id)}
+                >
+                  eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
 
         <tfoot>
@@ -29,11 +57,15 @@ export const CartView = () => {
               Total
             </td>
             <td colSpan="2" className="text-start fw-bold">
-              123456
+              {total}
             </td>
           </tr>
         </tfoot>
       </table>
+
+      <button className="btn btn-success" onClick={onCatalog}>
+        Seguir comprando
+      </button>
     </>
   );
 };
